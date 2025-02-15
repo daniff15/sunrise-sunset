@@ -1,0 +1,2 @@
+class SunsetSunriseRecord < ApplicationRecord
+end
