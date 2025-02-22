@@ -15,13 +15,13 @@ class SunsetSunriseService
       return { success: false, error: "Unable to fetch coordinates for the given location", status: 500 }
     end
 
-    lat = coordinates[:lat]
-    lng = coordinates[:lng]
+    @lat = coordinates[:lat]
+    @lng = coordinates[:lng]
 
-    existing_data = SunsetSunriseRecord.where(latitude: lat, longitude: lng, date: @start_date..@end_date)
+    existing_data = SunsetSunriseRecord.where(latitude: @lat, longitude: @lng, date: @start_date..@end_date)
     return { success: true, data: existing_data } if existing_data.any?
 
-    api_data = fetch_from_api(lat, lng)
+    api_data = fetch_from_api(@lat, @lng)
 
     if api_data[:success]
       save_data_to_db(api_data[:data])
@@ -92,6 +92,8 @@ class SunsetSunriseService
         longitude: @lng,
         date: entry["date"]
       ) do |record|
+        record.latitude = @lat      
+        record.longitude = @lng 
         record.location = @location
         record.sunrise = entry["sunrise"]
         record.sunset = entry["sunset"]
